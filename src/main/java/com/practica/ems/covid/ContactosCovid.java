@@ -7,6 +7,9 @@ import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
+import java.util.function.Consumer;
 
 import com.practica.excecption.EmsDuplicateLocationException;
 import com.practica.excecption.EmsDuplicatePersonException;
@@ -255,30 +258,25 @@ public class ContactosCovid {
 
 	private PosicionPersona crearPosicionPersona(String[] data) {
 		PosicionPersona posicionPersona = new PosicionPersona();
-		String fecha = null, hora;
-		float latitud = 0, longitud;
+		final String[] fecha = {null};
+		final float[] latitud = {0};
+
+		// Define a map to associate each index with an action
+		Map<Integer, Consumer<String>> actions = new HashMap<>();
+		actions.put(1, s -> posicionPersona.setDocumento(s));
+		actions.put(2, s -> fecha[0] = s);
+		actions.put(3, s -> posicionPersona.setFechaPosicion(parsearFecha(fecha[0], s)));
+		actions.put(4, s -> latitud[0] = Float.parseFloat(s));
+		actions.put(5, s -> posicionPersona.setCoordenada(new Coordenada(latitud[0], Float.parseFloat(s))));
+
 		for (int i = 1; i < Constantes.MAX_DATOS_LOCALIZACION; i++) {
 			String s = data[i];
-			switch (i) {
-			case 1:
-				posicionPersona.setDocumento(s);
-				break;
-			case 2:
-				fecha = data[i];
-				break;
-			case 3:
-				hora = data[i];
-				posicionPersona.setFechaPosicion(parsearFecha(fecha, hora));
-				break;
-			case 4:
-				latitud = Float.parseFloat(s);
-				break;
-			case 5:
-				longitud = Float.parseFloat(s);
-				posicionPersona.setCoordenada(new Coordenada(latitud, longitud));
-				break;
+			// Call the corresponding action
+			if (actions.containsKey(i)) {
+				actions.get(i).accept(s);
 			}
 		}
+
 		return posicionPersona;
 	}
 	
