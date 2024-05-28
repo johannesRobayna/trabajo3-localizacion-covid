@@ -19,8 +19,7 @@
 		<maven.compiler.target>21</maven.compiler.target>
 		<sonar.organization>johannesrobayna</sonar.organization>
   		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
-		<sonar.projectKey><johannesrobayna> <!-- Reemplaza con tu clave de proyecto -->
-                <sonar.login>669c19957861ee8f5a0a40f5bf0502bb2031fe82</sonar.login>
+		
 	</properties>
 
 	<dependencies>
